@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1746450028 source:e:\codeblocks\pp_proiect_programare\main.cpp
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<ctype.h>
+

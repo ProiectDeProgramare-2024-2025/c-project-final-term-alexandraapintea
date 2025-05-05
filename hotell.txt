@@ -1,0 +1,12 @@
+NUMAR CAMERE: 5
+=== LISTA CAMERE APARTINAND HOTELULUI ===
+Tip          Etaj   WiFi   Parcare  Pret/noapte  Ora disponibilitate
+Standard     2      Da     Da       100.50       14:00
+Luxe         3      Da     Nu       200.75       16:00
+Deluxe       1      Nu     Da       150.30       15:00
+Economy      2      Da     Da       80.00        12:00
+Superior     4      Da     Nu       250.00       17:00
+
+=== REZERVARI ACTIVE ===
+Tip Camera   Zile   Persoane  Pret total   Ora Check-in
+(Nu exista rezervari active in acest moment.)
