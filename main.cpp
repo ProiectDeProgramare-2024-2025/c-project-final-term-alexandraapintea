@@ -46,6 +46,7 @@ void afiseaza_camere(Camera camere[], int nr_camere);
 void cautare_dupa_tip(Camera camere[], int nr_camere, char tip[]);
 void salveaza_date(Camera camere[], int nr_camere, Rezervare rezervari[]);
 void citeste_date(Camera camere[], int *nr_camere, Rezervare rezervari[]);
+void afiseaza_rezervari(Camera camere[], int nr_camere, Rezervare rezervari[]);
 int valid_tip(char tip[]) //verifica daca un char este valid adica daca contine doar litere
 {
     for (int i = 0; tip[i] != '\0'; i++) //parcurge stringul
@@ -57,9 +58,34 @@ int valid_tip(char tip[]) //verifica daca un char este valid adica daca contine 
     }
     return 1; //altfel returnam 1 ca inseamna ca e litera
 }
+void afiseaza_rezervari(Camera camere[], int nr_camere, Rezervare rezervari[]) {
+    clear_screen();
+    int gasite = 0;
+    printf("=== " MAGENTA "REZERVARI ACTIVE" RESET " ===\n\n");
+    for (int i = 0; i < nr_camere; i++)
+        {
+        if (rezervari[i].activa == 1)  //daca camera curenta e rezervata o afisez
+        {
+            printf("Index: %d\n", i);
+            printf("Tip Camera: " RED "%s\n" RESET, rezervari[i].tip);
+            printf("Numar persoane: " CYAN "%d\n" RESET, rezervari[i].nr_persoane);
+            printf("Numar zile: " BLUE "%d\n" RESET, rezervari[i].zile);
+            printf("Pret total: " YELLOW "%.2f RON\n" RESET, rezervari[i].pret_total);
+            printf("Ora Check-in: " GREEN "%02d:00\n" RESET, camere[i].ora_disponibilitate);
+            printf("\n");
+            gasite = 1;
+        }
+    }
+    if (!gasite) {
+        printf(RED "Nu exista rezervari active" RESET " in acest moment.\n\n");
+    }
+    printf("Apasa Enter pentru a continua...");
+    getchar();
+}
 //Funcția pentru a adauga o camera
 void adauga_camera(Camera camere[], int *nr_camere, Rezervare rezervari[])
 {
+    clear_screen();
     if (*nr_camere >= MAX_CAMERE) //daca nr de camere la momentul actual este deja atins, adica deja exista 5 camere
         {
         printf(RED "Nu se mai pot adauga camere" RESET ". Maximul de %d camere a fost atins!\n", MAX_CAMERE);
@@ -205,6 +231,7 @@ void adauga_camera(Camera camere[], int *nr_camere, Rezervare rezervari[])
 //functie de rezervare a unei camere
 void rezerva_camera(Camera camere[], int nr_camere)
 {
+    clear_screen();
     char buffer[100];
     int index, nr_persoane, zile;
     while (1)
@@ -303,7 +330,8 @@ void rezerva_camera(Camera camere[], int nr_camere)
 // Funcția pentru a anula o rezervare
 void anuleaza_rezervare(Camera camere[], int nr_camere, Rezervare rezervari[])
 {
-    int index;
+    clear_screen();
+     int index;
     char buffer[100];
     printf("Introduceti indexul camerei pentru care doriti sa anulati rezervarea (0 - %d): ", MAX_CAMERE - 1);
     while (fgets(buffer, sizeof(buffer), stdin))
@@ -360,6 +388,7 @@ void clear_screen()
 // Funcția pentru a căuta camere după diverse criterii
 void cautare_camere(Camera camere[], int nr_camere, char tip[], int etaj, int wiFi, int parcare, float max_pret, int ora)
 {
+
     printf("Camere disponibile care se potrivesc criteriilor tale:\n");
     int gasite = 0;
     for (int i = 0; i < nr_camere; i++)
@@ -385,12 +414,14 @@ void cautare_camere(Camera camere[], int nr_camere, char tip[], int etaj, int wi
 // Funcția pentru a modifica prețul unei camere (se primește indexul camerei deja ales)
 void modifica_pret(Camera camere[], int nr_camere, int index)
 {
+    clear_screen();
     char buffer[100];
     float nou_pret;
     int prima_incercare = 1;
     while (1) {
         if (prima_incercare)
             {
+            printf("Pretul actual pentru camera %s este: " YELLOW "%.2f RON\n" RESET, camere[index].tip, camere[index].pret_pe_noapte);
             printf("Introduceti noul pret pentru camera %s (intre 100 si 1000 RON/noapte): ", camere[index].tip);
             prima_incercare = 0;
             }
@@ -431,6 +462,7 @@ void modifica_pret(Camera camere[], int nr_camere, int index)
 // Funcția pentru a modifica facilitățile unei camere (se primește indexul camerei deja ales)
 void modifica_facilitati(Camera camere[], int nr_camere, int index)
 {
+    clear_screen();
     char buffer[100];
     // Validare index camera
     while (1)
@@ -490,6 +522,7 @@ void modifica_facilitati(Camera camere[], int nr_camere, int index)
 // Funcția pentru a șterge o cameră
 void sterge_camera(Camera camere[], int *nr_camere)
 {
+    clear_screen();
     int index; //indexul camerei de sters
     char buffer[100];
     printf("Introduceti indexul camerei de sters (0 - %d): ", *nr_camere - 1);
@@ -845,8 +878,9 @@ int main()
             printf(BLUE    "4" RESET ". Iesire din program\n");
             printf(MAGENTA "5" RESET ". Rezerva o camera\n");
             printf(CYAN    "6" RESET ". Anuleaza o rezervare\n");
+            printf(ORANGE  "7" RESET ". Afiseaza rezervarile active\n");
             char buffer[100];
-            printf("Alege o optiune (Te rugam sa introduci o cifra intre 1 si 6): ");
+            printf("Alege o optiune (Te rugam sa introduci o cifra intre 1 si 7): ");
             fgets(buffer, sizeof(buffer), stdin);
             buffer[strcspn(buffer, "\n")] = 0;
             int valid = 1;
@@ -858,7 +892,7 @@ int main()
                     break;
                 }
                }
-            if (!valid || sscanf(buffer, "%d", &optiune) != 1 || optiune < 1 || optiune > 6) {
+            if (!valid || sscanf(buffer, "%d", &optiune) != 1 || optiune < 1 || optiune > 7) {
                 printf(RED "Optiune invalida" RESET "! Te rugam sa introduci un numar intre 1 si 6.\n");
                 printf("Apasa Enter pentru a continua...");
                 getchar();
@@ -909,7 +943,10 @@ int main()
                 rezerva_camera(camere, nr_camere);
             } else if (optiune == 6) {
                 anuleaza_rezervare(camere, nr_camere, rezervari);
-            } else {
+            }
+            else if (optiune == 7) {
+    afiseaza_rezervari(camere, nr_camere, rezervari);
+       }else {
                 printf("Atentie: Optiune invalida. Incercati din nou.\n");
                 continue;
             }
